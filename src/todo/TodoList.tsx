@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { createTodo, deleteTodo, getTodoId, getTodoList, updateTodo } from '../apis';
+import { createTodo, deleteTodo, getTodoId, getTodoList, updateTodo } from '../api';
 
 export default function TodoList() {
   const [todoTitle, setTodoTitle] = useState('');
@@ -17,30 +17,30 @@ export default function TodoList() {
 
   const loginToken = window.localStorage.getItem('loginToken');
 
-  const onChangeTodoTitle = (e) => {
+  const onChangeTodoTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTodoTitle(e.target.value);
   };
 
-  const onChangeTodoContent = (e) => {
+  const onChangeTodoContent = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTodoContent(e.target.value);
   };
 
-  const onChangeFixTodoTitle = (e) => {
+  const onChangeFixTodoTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFixTodoTItle(e.target.value);
   };
 
-  const onChangeFixTodoContent = (e) => {
+  const onChangeFixTodoContent = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFixTodoContent(e.target.value);
   };
 
-  const getTodoById = (id) => {
+  const getTodoById = (id : string, loginToken : any) => {
     getTodoId(id, loginToken)
     .then((response) => {
       setTodoId(response.data.data.id);
     })
   };
 
-  const onClickCreateTodo = () => {
+  const onClickCreateTodo = (loginToken : any) => {
     createTodo(todoTitle, todoContent, loginToken)
     .then(() => {
       setRequery(!requery);
@@ -49,14 +49,14 @@ export default function TodoList() {
     })
   };
 
-  const onClickDeleteTodo = (id) => {
+  const onClickDeleteTodo = (id : string, loginToken : any) => {
     deleteTodo(id, loginToken)
     .then((response) => {
       setRequery(!requery);
     })
   };
 
-  const onClickUpdateTodo = (id) => {
+  const onClickUpdateTodo = (id : string, loginToken : any) => {
     updateTodo(id, fixTodoTitle, fixTodoContent, loginToken)
     .then((response) => {
       setRequery(!requery);
@@ -64,19 +64,19 @@ export default function TodoList() {
     })
   };
 
-  const onClickDetailTodo = (id) => {
-    getTodoId(id)
+  const onClickDetailTodo = (id : string, loginToken : any) => {
+    getTodoId(id, loginToken)
     .then(() => {
       navigate(`/todo/${id}`)
     })
   };
 
-  const onClickUpdateButton = (id) => {
+  const onClickUpdateButton = (id : string) => {
     setUpdateState(!updateState);
-    getTodoById(id)
+    getTodoById(id, loginToken)
   };
 
-  const getTodo = () => {
+  const getTodo = (loginToken : any) => {
     getTodoList(loginToken)
     .then((response) => {
       setTodos(response.data.data);
@@ -84,7 +84,7 @@ export default function TodoList() {
   };
 
   useEffect(() => {
-    getTodo();
+    getTodo(loginToken);
   },[requery]);
 
   return (
