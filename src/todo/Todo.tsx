@@ -1,21 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { getTodoId } from '../apis';
+import { getTodoId } from '../api';
 
 export default function Todo() {
-  const [todoDetail, setTodoDetail] = useState([]);
+  const [todoDetail, setTodoDetail] = useState<ITodo | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
+  const loginToken : (string | null) = window.localStorage.getItem('loginToken')
+
+  type ITodo = {
+    content : string;
+    createdAt : string;
+    id : string;
+    title : string;
+    updatedAt : string
+  }
 
   useEffect(() => {
-    if(window.localStorage.getItem('loginToken') === null){
+    if(loginToken === null){
       alert('로그인이 필요합니다!');
       return navigate('/login');
     };
 
-    getTodoId(location.pathname.slice(6))
+    getTodoId(location.pathname.slice(6), loginToken)
     .then((response) => {
+      console.log(response.data.data)
       setTodoDetail(response.data.data)
     });
   },[]);
@@ -32,10 +42,10 @@ export default function Todo() {
         </Header>
 
         <Content>
-          <Title>{`Title : ${todoDetail.title}`}</Title>
-          <Title>{`Content : ${todoDetail.content}`}</Title>
-          <Title>{`만든시간 : ${todoDetail.createdAt}`}</Title>
-          <Title>{`수정시간 : ${todoDetail.updatedAt}`}</Title>
+          <Title>{`Title : ${todoDetail?.title}`}</Title>
+          <Title>{`Content : ${todoDetail?.content}`}</Title>
+          <Title>{`만든시간 : ${todoDetail?.createdAt}`}</Title>
+          <Title>{`수정시간 : ${todoDetail?.updatedAt}`}</Title>
 
           <BackButton
             onClick={onClickHistoryBack}

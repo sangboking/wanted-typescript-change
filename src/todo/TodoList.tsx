@@ -1,17 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { createTodo, deleteTodo, getTodoId, getTodoList, updateTodo } from '../api';
+import { createTodo, deleteTodo, getTodoId, getTodoList, login, updateTodo } from '../api';
 
 export default function TodoList() {
   const [todoTitle, setTodoTitle] = useState('');
   const [todoContent, setTodoContent] = useState('');
   const [fixTodoTitle, setFixTodoTItle] = useState('');
   const [fixTodoContent, setFixTodoContent] = useState('');
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState<ITodos[]>([]);
   const [todoId, setTodoId] = useState('');
   const [requery, setRequery] = useState(false);
   const [updateState, setUpdateState] = useState(false);
+
+  interface ITodos {
+    title : string,
+    content : string,
+    id : string,
+    createdAt : string,
+    updateAt : string
+  }
 
   const navigate = useNavigate();
 
@@ -141,12 +149,12 @@ export default function TodoList() {
                     updateState && todo.id === todoId ?
                     <>
                       <Button
-                        onClick={() => {onClickUpdateTodo(todo.id)}}
+                        onClick={() => {onClickUpdateTodo(todo.id, loginToken)}}
                       >
                         변경
                       </Button>
                       <Button
-                        onClick={onClickUpdateButton}
+                        onClick={() => {onClickUpdateButton(todo.id)}}
                       >
                         취소
                       </Button>
@@ -160,13 +168,13 @@ export default function TodoList() {
                   }
 
                   <Button
-                    onClick={() => {onClickDetailTodo(todo.id)}}
+                    onClick={() => {onClickDetailTodo(todo.id, loginToken)}}
                   >
                     상세
                   </Button>
 
                   <Button
-                    onClick={() => {onClickDeleteTodo(todo.id)}}
+                    onClick={() => {onClickDeleteTodo(todo.id, loginToken)}}
                   >
                     삭제
                   </Button>
